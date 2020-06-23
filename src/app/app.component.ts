@@ -6,9 +6,15 @@ import {
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
-import { AlgorithmInput, Coordinate, Buffer, AlgorithmOutput } from './interfaces';
 import { buildTreeData } from './build-tree-data';
 import packagejson from '../../package.json';
+import {
+  AlgorithmInput,
+  AlgorithmOutput,
+  Buffer,
+  Coordinate,
+  SquareStates,
+} from './interfaces';
 
 
 @Component({
@@ -32,6 +38,8 @@ export class AppComponent implements OnInit {
   // feedback to the user on the algorithm
   message: string = '';
 
+  squaresData: number[][] = [];
+
   private ctx: CanvasRenderingContext2D;
 
   @ViewChild('canvas', { static: true })
@@ -43,7 +51,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.ctx.fillStyle = 'black';
 
     this.canvasWidth = this.ctx.canvas.width;
     this.canvasHeight= this.ctx.canvas.width;
@@ -66,12 +73,28 @@ export class AppComponent implements OnInit {
     this.message = algorithmOutput.message;
   }
 
+  handleCanvasClick(event: MouseEvent) {
+    const canvas = event.target as HTMLElement;
+    const canvasRelativeX = event.x - canvas.offsetLeft;
+    const canvasRelativeY = event.y - canvas.offsetTop;
+
+    const squareWidth= this.canvasWidth / this.gridSizeSquares;
+    const squareHeight = this.canvasWidth / this.gridSizeSquares;
+
+    // which square did I click on?
+    const squareXIndex = Math.floor(canvasRelativeX / squareWidth);
+    const squareYIndex = Math.floor(canvasRelativeY / squareHeight);
+
+    console.log(squareXIndex, squareYIndex);
+  }
+
   private buildTreeData(): AlgorithmOutput {
     return buildTreeData({
       gridSize: this.gridSizeSquares,
       buffer: {x: this.bufferX, y: this.bufferY},
       numTrees: this.numberOfTrees,
       maxAttempts: this.maxAttempts,
+      voidedCoordinates: [],
     });
   }
 
@@ -79,11 +102,23 @@ export class AppComponent implements OnInit {
     this.ctx.clearRect(0,0, this.canvasWidth, this.canvasHeight);
   }
 
-  private drawSquare(x: number, y: number, width: number, height: number, filled: boolean) {
-    if (filled) {
-      this.ctx.fillRect(x, y, width, height);
-    } else {
-      this.ctx.strokeRect(x, y, width, height);
+  private drawSquare(x: number, y: number, width: number, height: number, state: number) {
+    switch (state) {
+
+      case SquareStates.TREE:
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(x, y, width, height);
+        break;
+
+      case SquareStates.VOID:
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillRect(x, y, width, height);
+        break;
+
+      case SquareStates.EMPTY:
+      default:
+        this.ctx.strokeRect(x, y, width, height);
+        break;
     }
   }
 
@@ -93,14 +128,12 @@ export class AppComponent implements OnInit {
 
     for (let x=0; x<this.gridSizeSquares; x++) {
       for (let y=0; y<this.gridSizeSquares; y++) {
-        const isFilled: boolean = squareData[x][y] === 1;
-        
         this.drawSquare(
           x*squareWidth,
           y*squareHeight,
           squareWidth,
           squareHeight,
-          isFilled,
+          squareData[x][y],
         );
       }
     }

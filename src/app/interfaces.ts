@@ -14,9 +14,16 @@ export interface AlgorithmInput {
   buffer: Buffer;
   numTrees: number;
   maxAttempts: number;
+  voidedCoordinates: Coordinate[];
 }
 
 export interface AlgorithmOutput {
   treeData: number[][];
   message: string;
+}
+
+export enum SquareStates {
+  EMPTY = 0,
+  TREE = 1,
+  VOID = 2,
 }

@@ -1,4 +1,11 @@
-import { AlgorithmInput, Coordinate, Buffer, AlgorithmOutput } from './interfaces';
+import {
+  AlgorithmInput,
+  AlgorithmOutput,
+  Buffer,
+  Coordinate,
+  SquareStates,
+} from './interfaces';
+
 
 export function buildTreeData(
   input: AlgorithmInput,
@@ -15,6 +22,19 @@ export function buildTreeData(
       );
     }
   }
+
+  // filter out voided spaces
+  remainingCoordinates.filter(
+    (coord: Coordinate) => {
+      for (const voidedCoordinate of input.voidedCoordinates) {
+        if (coord.x === voidedCoordinate.x && coord.y === voidedCoordinate.y) {
+          return true;
+        }
+      }
+      return false;
+    }
+  );
+
 
   // attempt to pick desired number of spots
   // retry a certain number of times if you run out of spaces
@@ -89,7 +109,7 @@ function coordinatesToGrid(gridSize: number, coordinates: Coordinate[]): number[
   }
 
   for (const coord of coordinates) {
-    treeData[coord.x][coord.y] = 1;
+    treeData[coord.x][coord.y] = SquareStates.TREE;
   }
 
   return treeData;
