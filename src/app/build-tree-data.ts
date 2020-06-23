@@ -32,7 +32,7 @@ export function buildTreeData(
   for (let i=0; i<input.numTrees; i++) {
     const remainingIndexs = remainingCoordinates.length;
 
-    if (remainingIndexs >= 0) {
+    if (remainingIndexs > 0) {
       const selectionIndex = randomInt(0, remainingIndexs-1);
       const selection = remainingCoordinates[selectionIndex];
       pickedCoordinates.push(selection);
@@ -117,5 +117,8 @@ function coordinatesToGrid(input: AlgorithmInput, coordinates: Coordinate[]): nu
 }
 
 function randomInt(min, max){
- return Math.floor(Math.random() * (max - min + 1)) + min;
+  if (min > max) {
+    throw new Error('ERROR: min is greater than max!');
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
