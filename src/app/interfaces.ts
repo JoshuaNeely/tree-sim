@@ -14,7 +14,7 @@ export interface AlgorithmInput {
   buffer: Buffer;
   numTrees: number;
   maxAttempts: number;
-  voidedCoordinates: Coordinate[];
+  initialCoordinates: number[][];
 }
 
 export interface AlgorithmOutput {

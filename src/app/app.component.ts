@@ -55,22 +55,34 @@ export class AppComponent implements OnInit {
     this.canvasWidth = this.ctx.canvas.width;
     this.canvasHeight= this.ctx.canvas.width;
 
-    this.setVersion();
+    this.setTitle();
+    this.initializeSquaresData();
 
-    this.redraw();
+    this.regenerate();
   }
 
-  private setVersion(): void {
+  private initializeSquaresData(): void {
+    for (let x=0; x<this.gridSizeSquares; x++) {
+      this.squaresData.push([]);
+
+      for (let y=0; y<this.gridSizeSquares; y++) {
+        this.squaresData[x][y] = SquareStates.EMPTY;
+      }
+    }
+  }
+
+  private setTitle(): void {
     this.version = packagejson.version;
     const currentTitle = this.title.getTitle();
     this.title.setTitle(`${currentTitle} ${this.version}`);
   }
 
-  redraw(): void {
+  regenerate(): void {
     this.clearCanvas();
     const algorithmOutput = this.buildTreeData();
-    this.drawSquares(algorithmOutput.treeData);
+    this.squaresData = algorithmOutput.treeData;
     this.message = algorithmOutput.message;
+    this.drawSquares();
   }
 
   handleCanvasClick(event: MouseEvent) {
@@ -81,11 +93,31 @@ export class AppComponent implements OnInit {
     const squareWidth= this.canvasWidth / this.gridSizeSquares;
     const squareHeight = this.canvasWidth / this.gridSizeSquares;
 
-    // which square did I click on?
     const squareXIndex = Math.floor(canvasRelativeX / squareWidth);
     const squareYIndex = Math.floor(canvasRelativeY / squareHeight);
 
-    console.log(squareXIndex, squareYIndex);
+    this.cycleSquareState(squareXIndex, squareYIndex);
+  }
+
+  private cycleSquareState(x, y) {
+    switch(this.squaresData[x][y]) {
+      case SquareStates.EMPTY:
+        this.squaresData[x][y] = SquareStates.VOID;
+        break;
+
+      case SquareStates.VOID:
+        this.squaresData[x][y] = SquareStates.TREE;
+        break;
+
+      case SquareStates.TREE:
+        this.squaresData[x][y] = SquareStates.EMPTY;
+        break;
+
+      default:
+        throw new Error('ERROR: Unexpected state');
+    }
+
+    this.drawSquares();
   }
 
   private buildTreeData(): AlgorithmOutput {
@@ -94,7 +126,7 @@ export class AppComponent implements OnInit {
       buffer: {x: this.bufferX, y: this.bufferY},
       numTrees: this.numberOfTrees,
       maxAttempts: this.maxAttempts,
-      voidedCoordinates: [],
+      initialCoordinates: this.squaresData,
     });
   }
 
@@ -117,12 +149,15 @@ export class AppComponent implements OnInit {
 
       case SquareStates.EMPTY:
       default:
-        this.ctx.strokeRect(x, y, width, height);
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(x, y, width, height);
         break;
     }
+
+    this.ctx.strokeRect(x, y, width, height);
   }
 
-  private drawSquares(squareData: number[][]) {
+  private drawSquares() {
     const squareWidth= this.canvasWidth / this.gridSizeSquares;
     const squareHeight = this.canvasWidth / this.gridSizeSquares;
 
@@ -133,7 +168,7 @@ export class AppComponent implements OnInit {
           y*squareHeight,
           squareWidth,
           squareHeight,
-          squareData[x][y],
+          this.squaresData[x][y],
         );
       }
     }

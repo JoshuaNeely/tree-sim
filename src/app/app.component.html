@@ -4,7 +4,7 @@
       <td>number of trees</td>
       <td>
         <input type="number" step="1"
-          (change)="redraw()"
+          (change)="regenerate()"
           [(ngModel)]="numberOfTrees">
       </td>
     </tr>
@@ -13,7 +13,7 @@
       <td>buffer x</td>
       <td>
         <input type="number" step="1"
-          (change)="redraw()"
+          (change)="regenerate()"
           [(ngModel)]="bufferX">
       </td>
     </tr>
@@ -22,7 +22,7 @@
       <td>buffer y</td>
       <td>
         <input type="number" step="1"
-          (change)="redraw()"
+          (change)="regenerate()"
           [(ngModel)]="bufferY">
       </td>
     </tr>
@@ -31,7 +31,7 @@
       <td>square grid size</td>
       <td>
         <input type="number" step="1"
-          (change)="redraw()"
+          (change)="regenerate()"
           [(ngModel)]="gridSizeSquares">
       </td>
     </tr>
@@ -46,7 +46,7 @@
 
     <tr>
       <td>
-        <button (click)="redraw()">recalculate</button>
+        <button (click)="regenerate()">recalculate</button>
       </td>
       <td>
         <pre>{{ message }}</pre>

@@ -17,24 +17,13 @@ export function buildTreeData(
   // mark every space as available
   for (let x=0; x<input.gridSize; x++) {
     for (let y=0; y<input.gridSize; y++) {
-      remainingCoordinates.push(
-        { x, y }
-      );
+      if (input.initialCoordinates[x][y] !== SquareStates.VOID) {
+        remainingCoordinates.push(
+          { x, y }
+        );
+      }
     }
   }
-
-  // filter out voided spaces
-  remainingCoordinates.filter(
-    (coord: Coordinate) => {
-      for (const voidedCoordinate of input.voidedCoordinates) {
-        if (coord.x === voidedCoordinate.x && coord.y === voidedCoordinate.y) {
-          return true;
-        }
-      }
-      return false;
-    }
-  );
-
 
   // attempt to pick desired number of spots
   // retry a certain number of times if you run out of spaces
@@ -57,7 +46,7 @@ export function buildTreeData(
     else {
       if (attemptNumber === input.maxAttempts) {
         return {
-          treeData: coordinatesToGrid(input.gridSize, pickedCoordinates),
+          treeData: coordinatesToGrid(input, pickedCoordinates),
           message: `Gave up after ${attemptNumber} attempts!
 Only placed ${pickedCoordinates.length}!`,
         }
@@ -72,7 +61,7 @@ Only placed ${pickedCoordinates.length}!`,
   }
   
   return {
-    treeData: coordinatesToGrid(input.gridSize, pickedCoordinates),
+    treeData: coordinatesToGrid(input, pickedCoordinates),
     message: `succeeded after ${attemptNumber} attempts`,
   }
 }
@@ -101,13 +90,24 @@ function shouldExclude(pickX: number, pickY: number, coord: Coordinate, buffer: 
   return false;
 }
 
-function coordinatesToGrid(gridSize: number, coordinates: Coordinate[]): number[][] {
+function coordinatesToGrid(input: AlgorithmInput, coordinates: Coordinate[]): number[][] {
   const treeData = [];
+  const gridSize = input.gridSize;
 
+  // initialize empty
   for (let x=0; x<gridSize; x++) {
     treeData.push([]);
+    for (let y=0; y<gridSize; y++) {
+      const originalState = input.initialCoordinates[x][y];
+      if (originalState === SquareStates.VOID) {
+        treeData[x][y] = SquareStates.VOID;
+      } else {
+        treeData[x][y] = SquareStates.EMPTY;
+      }
+    }
   }
 
+  // fill as needed
   for (const coord of coordinates) {
     treeData[coord.x][coord.y] = SquareStates.TREE;
   }
