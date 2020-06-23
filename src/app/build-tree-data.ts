@@ -30,9 +30,10 @@ export function buildTreeData(
   const pickedCoordinates = [];
 
   for (let i=0; i<input.numTrees; i++) {
-    const remainingIndexs = remainingCoordinates.length-1;
-    if (remainingIndexs > 0) {
-      const selectionIndex = randomInt(0, remainingIndexs);
+    const remainingIndexs = remainingCoordinates.length;
+
+    if (remainingIndexs >= 0) {
+      const selectionIndex = randomInt(0, remainingIndexs-1);
       const selection = remainingCoordinates[selectionIndex];
       pickedCoordinates.push(selection);
 
