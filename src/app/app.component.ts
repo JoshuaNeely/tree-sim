@@ -4,8 +4,10 @@ import {
   ElementRef,
   OnInit,
 } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 import { buildTreeData, ReturnData } from './build-tree-data';
+import packagejson from '../../package.json';
 
 
 @Component({
@@ -22,13 +24,19 @@ export class AppComponent implements OnInit {
   canvasWidth: number;
   canvasHeight: number;
 
+  // read from package.json
+  version: string = '0.0.0';
+
   // feedback to the user on the algorithm
-  message: string;
+  message: string = '';
 
   private ctx: CanvasRenderingContext2D;
 
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;  
+
+
+  constructor(private title: Title) {}
   
 
   ngOnInit(): void {
@@ -38,7 +46,15 @@ export class AppComponent implements OnInit {
     this.canvasWidth = this.ctx.canvas.width;
     this.canvasHeight= this.ctx.canvas.width;
 
+    this.setVersion();
+
     this.redraw();
+  }
+
+  private setVersion(): void {
+    this.version = packagejson.version;
+    const currentTitle = this.title.getTitle();
+    this.title.setTitle(`${currentTitle} ${this.version}`);
   }
 
   redraw(): void {
