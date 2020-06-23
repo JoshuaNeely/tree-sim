@@ -102,10 +102,14 @@ export class AppComponent implements OnInit {
   private cycleSquareState(x, y) {
     switch(this.squaresData[x][y]) {
       case SquareStates.EMPTY:
-        this.squaresData[x][y] = SquareStates.VOID;
+        this.squaresData[x][y] = SquareStates.PERSIST_EMPTY;
         break;
 
-      case SquareStates.VOID:
+      case SquareStates.PERSIST_EMPTY:
+        this.squaresData[x][y] = SquareStates.PERSIST_TREE;
+        break;
+
+      case SquareStates.PERSIST_TREE:
         this.squaresData[x][y] = SquareStates.TREE;
         break;
 
@@ -142,8 +146,13 @@ export class AppComponent implements OnInit {
         this.ctx.fillRect(x, y, width, height);
         break;
 
-      case SquareStates.VOID:
+      case SquareStates.PERSIST_EMPTY:
         this.ctx.fillStyle = 'red';
+        this.ctx.fillRect(x, y, width, height);
+        break;
+
+      case SquareStates.PERSIST_TREE:
+        this.ctx.fillStyle = 'blue';
         this.ctx.fillRect(x, y, width, height);
         break;
 

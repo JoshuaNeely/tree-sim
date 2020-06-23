@@ -17,10 +17,19 @@ export function buildTreeData(
   // mark every space as available
   for (let x=0; x<input.gridSize; x++) {
     for (let y=0; y<input.gridSize; y++) {
-      if (input.initialCoordinates[x][y] !== SquareStates.VOID) {
-        remainingCoordinates.push(
-          { x, y }
-        );
+      const coordinateValue = input.initialCoordinates[x][y];
+      if (!isPersistant(coordinateValue)) {
+        remainingCoordinates.push( { x, y } );
+      }
+    }
+  }
+
+  // exclude with pre-existing trees
+  for (let x=0; x<input.gridSize; x++) {
+    for (let y=0; y<input.gridSize; y++) {
+      const coordinateValue = input.initialCoordinates[x][y];
+      if (coordinateValue === SquareStates.PERSIST_TREE) {
+        remainingCoordinates = excludeCoordinates(x,y, remainingCoordinates, input.buffer);
       }
     }
   }
@@ -60,7 +69,7 @@ Only placed ${pickedCoordinates.length}!`,
       }
     }
   }
-  
+
   return {
     treeData: coordinatesToGrid(input, pickedCoordinates),
     message: `succeeded after ${attemptNumber} attempts`,
@@ -100,8 +109,8 @@ function coordinatesToGrid(input: AlgorithmInput, coordinates: Coordinate[]): nu
     treeData.push([]);
     for (let y=0; y<gridSize; y++) {
       const originalState = input.initialCoordinates[x][y];
-      if (originalState === SquareStates.VOID) {
-        treeData[x][y] = SquareStates.VOID;
+      if (isPersistant(originalState)) {
+        treeData[x][y] = originalState;
       } else {
         treeData[x][y] = SquareStates.EMPTY;
       }
@@ -114,6 +123,10 @@ function coordinatesToGrid(input: AlgorithmInput, coordinates: Coordinate[]): nu
   }
 
   return treeData;
+}
+
+function isPersistant(state: SquareStates): boolean {
+  return state === SquareStates.PERSIST_EMPTY || state === SquareStates.PERSIST_TREE;
 }
 
 function randomInt(min, max){

@@ -25,5 +25,6 @@ export interface AlgorithmOutput {
 export enum SquareStates {
   EMPTY = 0,
   TREE = 1,
-  VOID = 2,
+  PERSIST_EMPTY = 2,
+  PERSIST_TREE = 3,
 }
