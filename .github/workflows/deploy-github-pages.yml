@@ -1,0 +1,22 @@
+name: Deploy to Github-Pages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and deploy
+      uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.2.0
+      with:
+        github_access_token: ${{ secrets.ACCESS_TOKEN }}
+        build_configuration: production # The build environment for the app. please look configurations in your angular.json
+        base_href: /tree-sim/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+        deploy_branch: gh-pages # The branch the action should deploy to.
+        build_folder: dist/tree-sim # The folder where your project is supposed to be after running ng build by the action.
