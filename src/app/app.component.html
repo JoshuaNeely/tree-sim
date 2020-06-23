@@ -1,0 +1,49 @@
+<div class="container">
+  <table>
+    <tr>
+      <td>
+        number of trees
+      </td>
+      <td>
+        <input type="number" step="1"
+          (change)="redraw()"
+          [(ngModel)]="numberOfTrees">
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        buffer x
+      </td>
+      <td>
+        <input type="number" step="1"
+          (change)="redraw()"
+          [(ngModel)]="bufferX">
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        buffer y
+      </td>
+      <td>
+        <input type="number" step="1"
+          (change)="redraw()"
+          [(ngModel)]="bufferY">
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        square grid size
+      </td>
+      <td>
+        <input type="number" step="1"
+          (change)="redraw()"
+          [(ngModel)]="gridSizeSquares">
+      </td>
+    </tr>
+  </table>
+
+  <canvas #canvas width="500" height="500"></canvas>
+</div>
