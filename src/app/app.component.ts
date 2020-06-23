@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
     this.message = returnData.message;
   }
 
-  private buildTreeData(): number[][] {
+  private buildTreeData(): ReturnData {
     return buildTreeData(this.gridSizeSquares, {x: this.bufferX, y: this.bufferY}, this.numberOfTrees);
   }
 

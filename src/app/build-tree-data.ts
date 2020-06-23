@@ -9,7 +9,7 @@ interface Buffer {
   y: number;
 }
 
-interface ReturnData {
+export interface ReturnData {
   treeData: number[][];
   message: string;
 }
