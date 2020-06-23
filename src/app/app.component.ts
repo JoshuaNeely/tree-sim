@@ -6,7 +6,8 @@ import {
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
-import { buildTreeData, ReturnData } from './build-tree-data';
+import { AlgorithmInput, Coordinate, Buffer, AlgorithmOutput } from './interfaces';
+import { buildTreeData } from './build-tree-data';
 import packagejson from '../../package.json';
 
 
@@ -59,12 +60,12 @@ export class AppComponent implements OnInit {
 
   redraw(): void {
     this.clearCanvas();
-    const returnData = this.buildTreeData();
-    this.drawSquares(returnData.treeData);
-    this.message = returnData.message;
+    const algorithmOutput = this.buildTreeData();
+    this.drawSquares(algorithmOutput.treeData);
+    this.message = algorithmOutput.message;
   }
 
-  private buildTreeData(): ReturnData {
+  private buildTreeData(): AlgorithmOutput {
     return buildTreeData(this.gridSizeSquares, {x: this.bufferX, y: this.bufferY}, this.numberOfTrees);
   }
 

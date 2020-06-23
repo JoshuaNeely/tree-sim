@@ -1,18 +1,4 @@
-interface Coordinate {
-  x: number;
-  y: number;
-}
-
-// the space required around every selection
-interface Buffer {
-  x: number;
-  y: number;
-}
-
-export interface ReturnData {
-  treeData: number[][];
-  message: string;
-}
+import { AlgorithmInput, Coordinate, Buffer, AlgorithmOutput } from './interfaces';
 
 const MAX_ATTEMPTS = 30;
 
@@ -21,7 +7,7 @@ export function buildTreeData(
   buffer: Buffer,
   numTrees: number,
   attemptNumber: number = 1,
-): ReturnData {
+): AlgorithmOutput {
 
   let remainingCoordinates: Coordinate[] = [];
 
