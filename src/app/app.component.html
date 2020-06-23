@@ -43,6 +43,18 @@
           [(ngModel)]="gridSizeSquares">
       </td>
     </tr>
+
+    <tr>
+      <td>
+      </td>
+      <td>
+        <button (click)="redraw()">recalculate</button>
+      </td>
+    </tr>
+
+    <tr>
+      <pre>{{ message }}</pre>
+    </tr>
   </table>
 
   <canvas #canvas width="500" height="500"></canvas>

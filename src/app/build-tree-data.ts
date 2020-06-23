@@ -9,13 +9,26 @@ interface Buffer {
   y: number;
 }
 
-export function buildTreeData(gridSize: number, buffer: Buffer, numTrees: number): number[][] {
-  const availableCoordinates: Coordinate[] = [];
+interface ReturnData {
+  treeData: number[][];
+  message: string;
+}
+
+const MAX_ATTEMPTS = 30;
+
+export function buildTreeData(
+  gridSize: number,
+  buffer: Buffer,
+  numTrees: number,
+  attemptNumber: number = 1,
+): ReturnData {
+
+  let remainingCoordinates: Coordinate[] = [];
 
   // mark every space as available
   for (let x=0; x<gridSize; x++) {
     for (let y=0; y<gridSize; y++) {
-      availableCoordinates.push(
+      remainingCoordinates.push(
         { x, y }
       );
     }
@@ -25,13 +38,33 @@ export function buildTreeData(gridSize: number, buffer: Buffer, numTrees: number
   // retry a certain number of times if you run out of spaces
   const pickedCoordinates = [];
 
-  const selection = { x: 8, y: 4 };
-  pickedCoordinates.push(selection);
+  for (let i=0; i<numTrees; i++) {
+    const remainingIndexs = remainingCoordinates.length-1;
+    if (remainingIndexs > 0) {
+      const selectionIndex = randomInt(0, remainingIndexs);
+      const selection = remainingCoordinates[selectionIndex];
+      pickedCoordinates.push(selection);
 
-  const remainingCoordinates = excludeCoordinates(selection.x, selection.y, availableCoordinates, buffer);
+      remainingCoordinates = excludeCoordinates(selection.x, selection.y, remainingCoordinates, buffer);
+    }
+    else {
+      if (attemptNumber === MAX_ATTEMPTS) {
+        return {
+          treeData: coordinatesToGrid(gridSize, pickedCoordinates),
+          message: `Gave up after ${attemptNumber} attempts!
+Only placed ${pickedCoordinates.length}!`,
+        }
+      }
+      else {
+        return buildTreeData(gridSize, buffer, numTrees, attemptNumber + 1);
+      }
+    }
+  }
   
-  return coordinatesToGrid(gridSize, remainingCoordinates);
-  // return coordinatesToGrid(gridSize, pickedCordinates);
+  return {
+    treeData: coordinatesToGrid(gridSize, pickedCoordinates),
+    message: `succeeded after ${attemptNumber} attempts`,
+  }
 }
 
 // apply rules to exclude remaining coordinates when one is selected 
@@ -70,4 +103,8 @@ function coordinatesToGrid(gridSize: number, coordinates: Coordinate[]): number[
   }
 
   return treeData;
+}
+
+function randomInt(min, max){
+ return Math.floor(Math.random() * (max - min + 1)) + min;
 }

@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 
-import { buildTreeData } from './build-tree-data';
+import { buildTreeData, ReturnData } from './build-tree-data';
 
 
 @Component({
@@ -21,6 +21,9 @@ export class AppComponent implements OnInit {
 
   canvasWidth: number;
   canvasHeight: number;
+
+  // feedback to the user on the algorithm
+  message: string;
 
   private ctx: CanvasRenderingContext2D;
 
@@ -40,8 +43,9 @@ export class AppComponent implements OnInit {
 
   redraw(): void {
     this.clearCanvas();
-    const treeData = this.buildTreeData();
-    this.drawSquares(treeData);
+    const returnData = this.buildTreeData();
+    this.drawSquares(returnData.treeData);
+    this.message = returnData.message;
   }
 
   private buildTreeData(): number[][] {
