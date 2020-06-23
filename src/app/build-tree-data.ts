@@ -1,19 +1,15 @@
 import { AlgorithmInput, Coordinate, Buffer, AlgorithmOutput } from './interfaces';
 
-const MAX_ATTEMPTS = 30;
-
 export function buildTreeData(
-  gridSize: number,
-  buffer: Buffer,
-  numTrees: number,
+  input: AlgorithmInput,
   attemptNumber: number = 1,
 ): AlgorithmOutput {
 
   let remainingCoordinates: Coordinate[] = [];
 
   // mark every space as available
-  for (let x=0; x<gridSize; x++) {
-    for (let y=0; y<gridSize; y++) {
+  for (let x=0; x<input.gridSize; x++) {
+    for (let y=0; y<input.gridSize; y++) {
       remainingCoordinates.push(
         { x, y }
       );
@@ -24,31 +20,39 @@ export function buildTreeData(
   // retry a certain number of times if you run out of spaces
   const pickedCoordinates = [];
 
-  for (let i=0; i<numTrees; i++) {
+  for (let i=0; i<input.numTrees; i++) {
     const remainingIndexs = remainingCoordinates.length-1;
     if (remainingIndexs > 0) {
       const selectionIndex = randomInt(0, remainingIndexs);
       const selection = remainingCoordinates[selectionIndex];
       pickedCoordinates.push(selection);
 
-      remainingCoordinates = excludeCoordinates(selection.x, selection.y, remainingCoordinates, buffer);
+      remainingCoordinates = excludeCoordinates(
+        selection.x,
+        selection.y,
+        remainingCoordinates,
+        input.buffer,
+      );
     }
     else {
-      if (attemptNumber === MAX_ATTEMPTS) {
+      if (attemptNumber === input.maxAttempts) {
         return {
-          treeData: coordinatesToGrid(gridSize, pickedCoordinates),
+          treeData: coordinatesToGrid(input.gridSize, pickedCoordinates),
           message: `Gave up after ${attemptNumber} attempts!
 Only placed ${pickedCoordinates.length}!`,
         }
       }
       else {
-        return buildTreeData(gridSize, buffer, numTrees, attemptNumber + 1);
+        return buildTreeData(
+          input,
+          attemptNumber + 1
+        );
       }
     }
   }
   
   return {
-    treeData: coordinatesToGrid(gridSize, pickedCoordinates),
+    treeData: coordinatesToGrid(input.gridSize, pickedCoordinates),
     message: `succeeded after ${attemptNumber} attempts`,
   }
 }

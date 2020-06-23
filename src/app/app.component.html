@@ -1,9 +1,7 @@
 <div class="container">
   <table>
     <tr>
-      <td>
-        number of trees
-      </td>
+      <td>number of trees</td>
       <td>
         <input type="number" step="1"
           (change)="redraw()"
@@ -12,9 +10,7 @@
     </tr>
 
     <tr>
-      <td>
-        buffer x
-      </td>
+      <td>buffer x</td>
       <td>
         <input type="number" step="1"
           (change)="redraw()"
@@ -23,9 +19,7 @@
     </tr>
 
     <tr>
-      <td>
-        buffer y
-      </td>
+      <td>buffer y</td>
       <td>
         <input type="number" step="1"
           (change)="redraw()"
@@ -34,9 +28,7 @@
     </tr>
 
     <tr>
-      <td>
-        square grid size
-      </td>
+      <td>square grid size</td>
       <td>
         <input type="number" step="1"
           (change)="redraw()"
@@ -45,15 +37,20 @@
     </tr>
 
     <tr>
+      <td>max attempts</td>
       <td>
-      </td>
-      <td>
-        <button (click)="redraw()">recalculate</button>
+        <input type="number" step="1"
+          [(ngModel)]="maxAttempts">
       </td>
     </tr>
 
     <tr>
-      <pre>{{ message }}</pre>
+      <td>
+        <button (click)="redraw()">recalculate</button>
+      </td>
+      <td>
+        <pre>{{ message }}</pre>
+      </td>
     </tr>
   </table>
 

@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   bufferX: number = 2;
   bufferY: number = 2;
   gridSizeSquares: number = 16;
+  maxAttempts: number = 10;
 
   canvasWidth: number;
   canvasHeight: number;
@@ -66,7 +67,12 @@ export class AppComponent implements OnInit {
   }
 
   private buildTreeData(): AlgorithmOutput {
-    return buildTreeData(this.gridSizeSquares, {x: this.bufferX, y: this.bufferY}, this.numberOfTrees);
+    return buildTreeData({
+      gridSize: this.gridSizeSquares,
+      buffer: {x: this.bufferX, y: this.bufferY},
+      numTrees: this.numberOfTrees,
+      maxAttempts: this.maxAttempts,
+    });
   }
 
   private clearCanvas(): void {
