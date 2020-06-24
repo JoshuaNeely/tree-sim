@@ -3,8 +3,8 @@ import {
   AlgorithmOutput,
   Buffer,
   Coordinate,
-  SquareStates,
-} from './interfaces';
+  SquareState,
+} from './util';
 
 
 export function buildTreeData(
@@ -28,7 +28,7 @@ export function buildTreeData(
   for (let x=0; x<input.gridSize; x++) {
     for (let y=0; y<input.gridSize; y++) {
       const coordinateValue = input.initialCoordinates[x][y];
-      if (coordinateValue === SquareStates.PERSIST_TREE) {
+      if (coordinateValue === SquareState.PERSIST_TREE) {
         remainingCoordinates = excludeCoordinates(x,y, remainingCoordinates, input.buffer);
       }
     }
@@ -112,21 +112,21 @@ function coordinatesToGrid(input: AlgorithmInput, coordinates: Coordinate[]): nu
       if (isPersistant(originalState)) {
         treeData[x][y] = originalState;
       } else {
-        treeData[x][y] = SquareStates.EMPTY;
+        treeData[x][y] = SquareState.EMPTY;
       }
     }
   }
 
   // fill as needed
   for (const coord of coordinates) {
-    treeData[coord.x][coord.y] = SquareStates.TREE;
+    treeData[coord.x][coord.y] = SquareState.TREE;
   }
 
   return treeData;
 }
 
-function isPersistant(state: SquareStates): boolean {
-  return state === SquareStates.PERSIST_EMPTY || state === SquareStates.PERSIST_TREE;
+function isPersistant(state: SquareState): boolean {
+  return state === SquareState.PERSIST_EMPTY || state === SquareState.PERSIST_TREE;
 }
 
 function randomInt(min, max){

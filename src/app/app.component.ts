@@ -13,8 +13,11 @@ import {
   AlgorithmOutput,
   Buffer,
   Coordinate,
-  SquareStates,
-} from './interfaces';
+  SquareState,
+  AllSquareStates,
+  getStateColor,
+  getStateDescription,
+} from './util';
 
 
 @Component({
@@ -31,6 +34,13 @@ export class AppComponent implements OnInit {
 
   canvasWidth: number;
   canvasHeight: number;
+
+  legend = AllSquareStates.map(state => {
+    return { 
+      color: getStateColor(state),
+      description: getStateDescription(state),
+    }
+  });
 
   // read from package.json
   version: string = '0.0.0';
@@ -66,7 +76,7 @@ export class AppComponent implements OnInit {
       this.squaresData.push([]);
 
       for (let y=0; y<this.gridSizeSquares; y++) {
-        this.squaresData[x][y] = SquareStates.EMPTY;
+        this.squaresData[x][y] = SquareState.EMPTY;
       }
     }
   }
@@ -101,20 +111,20 @@ export class AppComponent implements OnInit {
 
   private cycleSquareState(x, y) {
     switch(this.squaresData[x][y]) {
-      case SquareStates.EMPTY:
-        this.squaresData[x][y] = SquareStates.PERSIST_EMPTY;
+      case SquareState.EMPTY:
+        this.squaresData[x][y] = SquareState.PERSIST_EMPTY;
         break;
 
-      case SquareStates.PERSIST_EMPTY:
-        this.squaresData[x][y] = SquareStates.PERSIST_TREE;
+      case SquareState.PERSIST_EMPTY:
+        this.squaresData[x][y] = SquareState.PERSIST_TREE;
         break;
 
-      case SquareStates.PERSIST_TREE:
-        this.squaresData[x][y] = SquareStates.TREE;
+      case SquareState.PERSIST_TREE:
+        this.squaresData[x][y] = SquareState.TREE;
         break;
 
-      case SquareStates.TREE:
-        this.squaresData[x][y] = SquareStates.EMPTY;
+      case SquareState.TREE:
+        this.squaresData[x][y] = SquareState.EMPTY;
         break;
 
       default:
@@ -139,28 +149,27 @@ export class AppComponent implements OnInit {
   }
 
   private drawSquare(x: number, y: number, width: number, height: number, state: number) {
+    this.ctx.fillStyle = getStateColor(state);
+
     switch (state) {
-
-      case SquareStates.TREE:
-        this.ctx.fillStyle = 'black';
+      case SquareState.TREE:
         this.ctx.fillRect(x, y, width, height);
         break;
 
-      case SquareStates.PERSIST_EMPTY:
-        this.ctx.fillStyle = 'red';
+      case SquareState.PERSIST_EMPTY:
         this.ctx.fillRect(x, y, width, height);
         break;
 
-      case SquareStates.PERSIST_TREE:
-        this.ctx.fillStyle = 'blue';
+      case SquareState.PERSIST_TREE:
         this.ctx.fillRect(x, y, width, height);
         break;
 
-      case SquareStates.EMPTY:
+      case SquareState.EMPTY:
+        this.ctx.fillRect(x, y, width, height);
+        break;
+
       default:
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(x, y, width, height);
-        break;
+        throw new Error('ERROR: Unexpected state');
     }
 
     this.ctx.strokeRect(x, y, width, height);

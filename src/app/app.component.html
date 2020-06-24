@@ -52,9 +52,22 @@
         <pre>{{ message }}</pre>
       </td>
     </tr>
+
+    <tr *ngFor="let legendRow of legend">
+      <td class="legend-color-cell">
+        <div
+          class="legend-color"
+          [style.background-color]="legendRow.color">
+        </div>
+      </td>
+      <td>
+        {{legendRow.description}}
+      </td>
+    </tr>
   </table>
 
   <canvas #canvas width="500" height="500"
     (click)="handleCanvasClick($event)">
   </canvas>
 </div>
+
