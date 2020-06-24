@@ -66,7 +66,6 @@ export class AppComponent implements OnInit {
     this.canvasHeight= this.ctx.canvas.width;
 
     this.setTitle();
-    this.initializeSquaresData();
 
     this.regenerate();
   }
@@ -88,6 +87,8 @@ export class AppComponent implements OnInit {
   }
 
   regenerate(): void {
+    this.initializeSquaresData();
+
     this.clearCanvas();
     const algorithmOutput = this.buildTreeData();
     this.squaresData = algorithmOutput.treeData;
