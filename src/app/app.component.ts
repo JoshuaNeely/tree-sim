@@ -17,6 +17,7 @@ import {
   AllSquareStates,
   getStateColor,
   getStateDescription,
+  Grid,
 } from './util';
 
 
@@ -48,7 +49,7 @@ export class AppComponent implements OnInit {
   // feedback to the user on the algorithm
   message: string = '';
 
-  squaresData: number[][] = [];
+  squaresData: Grid = [];
 
   private ctx: CanvasRenderingContext2D;
 
@@ -67,6 +68,7 @@ export class AppComponent implements OnInit {
 
     this.setTitle();
 
+    this.initializeSquaresData();
     this.regenerate();
   }
 
@@ -87,8 +89,6 @@ export class AppComponent implements OnInit {
   }
 
   regenerate(): void {
-    this.initializeSquaresData();
-
     this.clearCanvas();
     const algorithmOutput = this.buildTreeData();
     this.squaresData = algorithmOutput.treeData;
@@ -121,10 +121,6 @@ export class AppComponent implements OnInit {
         break;
 
       case SquareState.PERSIST_TREE:
-        this.squaresData[x][y] = SquareState.TREE;
-        break;
-
-      case SquareState.TREE:
         this.squaresData[x][y] = SquareState.EMPTY;
         break;
 
