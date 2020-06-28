@@ -70,3 +70,21 @@ export function getStateDescription(state: SquareState): string {
       throw new Error('ERROR: Unexpected state');
   }
 }
+
+export type Grid = number[][];
+
+export function createGrid(
+  state: SquareState,
+  gridSize: number
+): Grid {
+  const grid: Grid = [];
+
+  for (let x=0; x<gridSize; x++) {
+    grid.push([]);
+
+    for (let y=0; y<gridSize; y++) {
+      grid[x][y] = state;
+    }
+  }
+  return grid;
+}
